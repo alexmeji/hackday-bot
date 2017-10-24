@@ -9,6 +9,32 @@ const _ = require('lodash'),
     console: config.get('/logger/options/console')
   })
 
+const templates = require('../templates'),
+  facebook = require('../lib/facebook')
+
+// Incoming events handling
+const incoming = (event) => {
+
+  const senderID = event.sender.id
+  const recipientID = event.recipient.id
+  const timeOfMessage = event.timestamp
+  const message = event.message
+
+  if (!message) {
+    return Logger.error('Webhook received unknown event: ', event)
+  }
+
+  Logger.info('Received message for user %d and page %d at %d with message: %j', senderID, recipientID, timeOfMessage, message)
+
+  const messageId = message.mid
+  const messageText = message.text
+
+  if (messageText) {
+    facebook.response(templates.text.create(senderID, messageText))
+  }
+
+}
+
 const webhook = {
   validation: (request, reply) => {
 
@@ -49,6 +75,7 @@ const webhook = {
         _.each(entry.messaging, (event) => {
 
           Logger.debug(`Messenger event: %j`, event)
+          incoming(event)
 
         })
       })
