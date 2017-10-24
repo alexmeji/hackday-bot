@@ -22,6 +22,10 @@ module.exports = {
                     type: 'web_url',
                     url: 'https://www.yalochat.com/',
                     title: 'Open Web URL'
+                  }, {
+                    type: 'postback',
+                    title: 'Call Postback #1',
+                    payload: 'Payload for first bubble',
                   }
                 ],
               }, {
@@ -34,6 +38,10 @@ module.exports = {
                     type: 'web_url',
                     url: 'https://www.yalochat.com/promo',
                     title: 'Open Web URL'
+                  }, {
+                    type: 'postback',
+                    title: 'Call Postback #2',
+                    payload: 'Payload for second bubble',
                   }
                 ]
               }

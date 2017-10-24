@@ -19,17 +19,21 @@ const incoming = (event) => {
   const recipientID = event.recipient.id
   const timeOfMessage = event.timestamp
   const message = event.message
+  const postback = event.postback
 
-  if (!message) {
+  if (!message && !postback) {
     return Logger.error('Webhook received unknown event: ', event)
   }
 
   Logger.info('Received message for user %d and page %d at %d with message: %j', senderID, recipientID, timeOfMessage, message)
 
-  const messageId = message.mid
-  const messageText = message.text
+  const messageId = message && message.mid
+  const messageText = postback && postback.title || message && message.text
+  const payload = postback && postback.payload
 
-  if (messageText) {
+  if (payload) {
+    return facebook.response(templates.text.create(senderID, `${messageText} (${payload})`))
+  } else if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
     switch (messageText) {
