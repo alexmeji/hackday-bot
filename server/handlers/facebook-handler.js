@@ -37,7 +37,12 @@ const incoming = (event) => {
 
   if (attachments) {
     return facebook.response(templates.text.create(senderID, `Message with attachment received (${messageText})`)).then(() => {
-      facebook.response(templates.text.create(senderID, `File Url: ${attachmenUrl}`))
+      if (messageText == 'upload_location') {
+        let coordinates = attachments[0].payload.coordinates
+        facebook.response(templates.text.create(senderID, `Coordinates: ${coordinates.lat},${coordinates.long}`))
+      } else {
+        facebook.response(templates.text.create(senderID, `File Url: ${attachmenUrl}`))
+      }
     })
   } else if (payload) {
     return facebook.response(templates.text.create(senderID, `${messageText} (${payload})`))
