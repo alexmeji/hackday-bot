@@ -50,6 +50,14 @@ const incoming = (event) => {
     // If we receive a text message, check to see if it matches a keyword
     // and send back the template example. Otherwise, just echo the text we received.
     switch (messageText) {
+      case 'hi':
+      case 'hello':
+      case 'hola':
+        return facebook.getUser(senderID).then((user) => {
+          facebook.response(templates.text.create(senderID, `${messageText} ${user.first_name}! (${user.id})`)).then(() => {
+            facebook.response(templates.image.picture(senderID, user.profile_pic))
+          })
+        })
       case 'generic':
         return facebook.response(templates.generic.create(senderID))
       case 'button':

@@ -40,6 +40,31 @@ const response = (template) => {
 
 }
 
+const getUser = (userId) => {
+
+  return new Promise((resolve, reject) => {
+
+    const uri = (`/${userId}` || '/').concat(`?access_token=${fbAccessToken}`)
+    const timeout = 5000
+
+    const opts = {
+      baseUrl: fbApiUrl,
+      timeout: timeout,
+      rejectUnauthorized: true
+    }
+
+    wreck.get(uri, opts).then(response => {
+      Logger.info('User Data %j', response)
+      resolve(response.body)
+    }).catch((error) => {
+      Logger.error('User Data', error)
+      reject(error)
+    })
+  })
+
+}
+
 module.exports = {
-  response
+  response,
+  getUser
 }
