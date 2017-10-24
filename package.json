@@ -1,7 +1,7 @@
 {
-  "name": "hapi-server",
+  "name": "hackday-bot",
   "version": "1.0.0",
-  "description": "Hapi Server",
+  "description": "Hackday Bot",
   "main": "index.js",
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:kikerios/hapi-server.git"
+    "url": "git+ssh://git@github.com:kikerios/hackday-bot.git"
   },
   "author": "@kikerios <web.lrios@gmail.com>",
   "license": "ISC"
