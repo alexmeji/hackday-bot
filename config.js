@@ -16,6 +16,9 @@ const config = {
     host: process.env.APP_HOST || 'localhost',
     port: process.env.APP_PORT || 3020
   },
+  messenger: {
+    token: process.env.VERIFY_TOKEN || 'H@ck-d@y'
+  },
   logger: {
     options: {
       console: ToBoolean(_.defaultTo(process.env.LOGGER_DEBUG, true))
