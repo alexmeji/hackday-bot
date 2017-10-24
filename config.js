@@ -17,7 +17,10 @@ const config = {
     port: process.env.APP_PORT || 3020
   },
   messenger: {
-    token: process.env.VERIFY_TOKEN || 'H@ck-d@y'
+    token: process.env.VERIFY_TOKEN || 'H@ck-d@y',
+    apiUrl: process.env.FB_API_URL || 'https://graph.facebook.com/v2.6',
+    messagePath: process.env.MESSAGE_PATH || '/me/messages',
+    accessToken: process.env.PAGE_ACCESS_TOKEN
   },
   logger: {
     options: {
