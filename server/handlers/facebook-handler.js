@@ -30,7 +30,14 @@ const incoming = (event) => {
   const messageText = message.text
 
   if (messageText) {
-    facebook.response(templates.text.create(senderID, messageText))
+    // If we receive a text message, check to see if it matches a keyword
+    // and send back the template example. Otherwise, just echo the text we received.
+    switch (messageText) {
+      case 'generic':
+        return facebook.response(templates.generic.create(senderID))
+      default:
+        return facebook.response(templates.text.create(senderID, messageText))
+    }
   }
 
 }
