@@ -39,6 +39,8 @@ const incoming = (event) => {
     switch (messageText) {
       case 'generic':
         return facebook.response(templates.generic.create(senderID))
+      case 'button':
+        return facebook.response(templates.button.create(senderID))
       default:
         return facebook.response(templates.text.create(senderID, messageText))
     }
