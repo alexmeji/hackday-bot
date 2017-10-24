@@ -15,23 +15,27 @@ const wreck = require('./wreck-promise'),
 // send message to facebook
 const response = (template) => {
 
-  const payload = template || {}
-  const uri = (fbMessagePath || '/').concat(`?access_token=${fbAccessToken}`)
-  const timeout = 5000
+  return new Promise((resolve, reject) => {
+    const payload = template || {}
+    const uri = (fbMessagePath || '/').concat(`?access_token=${fbAccessToken}`)
+    const timeout = 5000
 
-  const opts = {
-    baseUrl: fbApiUrl,
-    payload: payload,
-    timeout: timeout,
-    rejectUnauthorized: true
-  }
+    const opts = {
+      baseUrl: fbApiUrl,
+      payload: payload,
+      timeout: timeout,
+      rejectUnauthorized: true
+    }
 
-  wreck.post(uri, opts).then(response => {
-    let recipientId = response.body.recipient_id
-    let messageId = response.body.message_id
-    Logger.info('Successfully sent message with id %s to recipient %s', messageId, recipientId)
-  }).catch((error) => {
-    Logger.error(error, 'Unable to send message %j', payload)
+    wreck.post(uri, opts).then(response => {
+      let recipientId = response.body.recipient_id
+      let messageId = response.body.message_id
+      Logger.info('Successfully sent message with id %s to recipient %s', messageId, recipientId)
+      resolve()
+    }).catch((error) => {
+      Logger.error(error, 'Unable to send message %j', payload)
+      reject()
+    })
   })
 
 }

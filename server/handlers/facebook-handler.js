@@ -20,18 +20,26 @@ const incoming = (event) => {
   const timeOfMessage = event.timestamp
   const message = event.message
   const postback = event.postback
+  const attachments = message && message.attachments
 
-  if (!message && !postback) {
+  if (!message && !postback && !attachments) {
     return Logger.error('Webhook received unknown event: ', event)
   }
 
   Logger.info('Received message for user %d and page %d at %d with message: %j', senderID, recipientID, timeOfMessage, message)
 
   const messageId = message && message.mid
-  const messageText = postback && postback.title || message && message.text
+  const messageText = postback && postback.title ||
+    attachments && `upload_${attachments[0].type}` ||
+    message && message.text
   const payload = postback && postback.payload
+  const attachmenUrl = attachments && `${attachments[0].payload.url}`
 
-  if (payload) {
+  if (attachments) {
+    return facebook.response(templates.text.create(senderID, `Message with attachment received (${messageText})`)).then(() => {
+      facebook.response(templates.text.create(senderID, `File Url: ${attachmenUrl}`))
+    })
+  } else if (payload) {
     return facebook.response(templates.text.create(senderID, `${messageText} (${payload})`))
   } else if (messageText) {
     // If we receive a text message, check to see if it matches a keyword
