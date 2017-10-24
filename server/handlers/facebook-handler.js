@@ -54,6 +54,8 @@ const incoming = (event) => {
         return facebook.response(templates.generic.create(senderID))
       case 'button':
         return facebook.response(templates.button.create(senderID))
+      case 'image':
+        return facebook.response(templates.image.create(senderID))
       default:
         return facebook.response(templates.text.create(senderID, messageText))
     }
