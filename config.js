@@ -26,6 +26,13 @@ const config = {
     options: {
       console: ToBoolean(_.defaultTo(process.env.LOGGER_DEBUG, true))
     }
+  },
+  ai: {
+    uri: 'http://localhost:5000/parse'
+  },
+  random: {
+    jokes: 'http://api.icndb.com/jokes/random',
+    rain: 'https://loremflickr.com/g/320/240/rain/all'
   }
 }
 

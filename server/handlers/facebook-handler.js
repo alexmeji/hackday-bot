@@ -1,6 +1,7 @@
 'use strict'
 
 const config = require('../../config')
+const Wreck = require('../lib/wreck-promise')
 
 const _ = require('lodash'),
   Boom = require('boom'),
@@ -11,6 +12,10 @@ const _ = require('lodash'),
 
 const templates = require('../templates'),
   facebook = require('../lib/facebook')
+
+const aiUri = config.get('/ai/uri')
+const jokesUri = config.get('/random/jokes')
+const rainUri = config.get('/random/rain')
 
 // Incoming events handling
 const incoming = (event) => {
@@ -65,7 +70,38 @@ const incoming = (event) => {
       case 'image':
         return facebook.response(templates.image.create(senderID))
       default:
-        return facebook.response(templates.text.create(senderID, messageText))
+        // Here is the magic
+        return Wreck.get(`${aiUri}?q=${messageText}`, {}).then(result => {
+          const {body} = result
+          if (body.intent.confidence >= 0.5 && body.intent.name !== 'none') {
+            switch (body.intent.name) {
+              case 'chiste':
+                facebook.response(templates.text.create(senderID, 'Ok... te contaré un chiste:')).then(() => {
+                  Wreck.get(jokesUri, {}).then(result => {
+                    const {body} = result
+                    facebook.response(templates.text.create(senderID, body.value.joke)).then(_ => {
+                      facebook.response(templates.image.create(senderID))
+                    })
+                  }).catch(_ => {
+                    facebook.response(templates.image.create(senderID, 'No estoy de humor...'))
+                  })
+                })
+                break
+              case 'consejos-amor':
+                facebook.response(templates.text.create(senderID, 'Está imagen representa lo que siento... :(')).then(() => {
+                  facebook.response(templates.image.picture(senderID, rainUri))
+                })
+                break
+              default:
+                facebook.response(templates.text.create(senderID, body.intent.name))
+            }
+          } else {
+            facebook.response(templates.text.create(senderID, 'Aún no puedo ayudarte con esto... :('))
+          }
+        }).catch(error => {
+          Logger.error(error)
+          facebook.response(templates.text.create(senderID, messageText))
+        })
     }
   }
 
